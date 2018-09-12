@@ -40,8 +40,6 @@
             android:textAppearance="?android:textAppearanceSmall"
             android:textColor="#AEB6BD"
             android:text="@string/product_quantity"/>
-
-
     </LinearLayout>
 
     <LinearLayout
@@ -67,19 +65,18 @@
             android:fontFamily="sans-serif"
             android:textAppearance="?android:textAppearanceSmall"
             android:textColor="#AEB6BD"/>
-
     </LinearLayout>
 
-    <LinearLayout
+    <!--<LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
         <Button
             android:id="@+id/sale_button"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/sale_button" />
-    </LinearLayout>
+            android:text="@string/sale_button"
+            android:layout_margin="@dimen/main_margin"/>
+    </LinearLayout>-->
 
 
 </LinearLayout>

@@ -13,17 +13,19 @@ import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.smason.inventory2.data.InventoryContract.ProductEntry;
 
 /**
- * Allows user to create a new pet or edit an existing one.
+ * Allows user to create a new product or edit an existing one.
  */
 public class EditInventoryActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks <Cursor>{
 
@@ -59,19 +61,19 @@ public class EditInventoryActivity extends AppCompatActivity implements LoaderMa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.editinventory_activity);
 
-        //See if we are creating a new pet or editing an existing one
+        //See if we are creating a new product or editing an existing one
         Intent intent = getIntent();
         mCurrentProductUri = intent.getData();
 
-        //If no URI exists with the intent we are creating a new pet
+        //If no URI exists with the intent we are creating a new product
         if (mCurrentProductUri == null) {
-            setTitle(getString(R.string.editor_activity_title_new_pet));
+            setTitle(getString(R.string.editor_activity_title_new_product));
 
             //hide the delete menu option for new product additions
             invalidateOptionsMenu();
 
         } else {
-            setTitle(getString(R.string.editor_activity_title_edit_pet));
+            setTitle(getString(R.string.editor_activity_title_edit_product));
         }
 
         // Find all relevant views that we will need to read user input from
@@ -90,12 +92,55 @@ public class EditInventoryActivity extends AppCompatActivity implements LoaderMa
         mSupplierEditText.setOnTouchListener(mTouchListener);
         mSupplierPhoneEditText.setOnTouchListener(mTouchListener);
 
+        // Setup the button to add quantity
+        Button addButton = findViewById(R.id.add_button);
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int quantity = Integer.parseInt(mQuantityEditText.getText().toString());
+
+                if (quantity >= 0 && quantity < 100) {
+                    quantity = quantity + 1;
+                    ContentValues values = new ContentValues();
+                    values.put(ProductEntry.COLUMN_PRODUCT_QUANTITY, quantity);
+                    getContentResolver().update(mCurrentProductUri, values, null, null);
+                }
+            }
+        });
+
+        // Setup the button to subtract quantity
+        Button subButton = findViewById(R.id.minus_button);
+        subButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int quantity = Integer.parseInt(mQuantityEditText.getText().toString());
+
+                if (quantity > 0 ) {
+                    quantity = quantity - 1;
+                    ContentValues values = new ContentValues();
+                    values.put(ProductEntry.COLUMN_PRODUCT_QUANTITY, quantity);
+                    getContentResolver().update(mCurrentProductUri, values, null, null);
+
+                }
+
+            }
+        });
+
+        // Setup the button to contact the supplier
+        Button dialButton = findViewById(R.id.dial_button);
+        dialButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_DIAL);
+                intent.setData(Uri.parse("tel:" + mSupplierPhoneEditText.getText().toString()));
+                startActivity(intent);
+            }
+        });
+
     }
 
-
-
     /**
-     * Get user input from editor and save new pet into database.
+     * Get user input from editor and save new product into database.
      */
     private void insertProduct() {
         // Read from input fields
@@ -116,7 +161,7 @@ public class EditInventoryActivity extends AppCompatActivity implements LoaderMa
 
 
         // Create a ContentValues object where column names are the keys,
-        // and pet attributes from the editor are the values.
+        // and product attributes from the editor are the values.
         ContentValues values = new ContentValues();
         values.put(ProductEntry.COLUMN_PRODUCT_NAME, nameString);
         values.put(ProductEntry.COLUMN_PRODUCT_PRICE, price);
@@ -126,26 +171,26 @@ public class EditInventoryActivity extends AppCompatActivity implements LoaderMa
 
         if (mCurrentProductUri == null) {
 
-            // Insert a new pet into the provider, returning the content URI for the new pet.
+            // Insert a new product into the provider, returning the content URI for the new product.
             Uri newUri = getContentResolver().insert(ProductEntry.CONTENT_URI, values);
 
             // Show a toast message depending on whether or not the insertion was successful
             if (newUri == null) {
                 // If the new content URI is null, then there was an error with insertion.
-                Toast.makeText(this, getString(R.string.editor_insert_pet_failed),
+                Toast.makeText(this, getString(R.string.editor_insert_product_failed),
                         Toast.LENGTH_SHORT).show();
             } else {
                 // Otherwise, the insertion was successful and we can display a toast.
-                Toast.makeText(this, getString(R.string.editor_insert_pet_successful),
+                Toast.makeText(this, getString(R.string.editor_insert_product_successful),
                         Toast.LENGTH_SHORT).show();
             }
         } else {
             int affectedRows = getContentResolver().update(mCurrentProductUri, values, null, null);
 
             if (affectedRows == 0) {
-                Toast.makeText(this, getString(R.string.editor_update_pet_failed), Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.editor_update_product_failed), Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(this, getString(R.string.editor_update_pet_successful), Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.editor_update_product_successful), Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -317,7 +362,7 @@ public class EditInventoryActivity extends AppCompatActivity implements LoaderMa
         builder.setNegativeButton(R.string.keep_editing, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 // User clicked the "Keep editing" button, so dismiss the dialog
-                // and continue editing the pet.
+                // and continue editing.
                 if (dialog != null) {
                     dialog.dismiss();
                 }
@@ -329,7 +374,6 @@ public class EditInventoryActivity extends AppCompatActivity implements LoaderMa
     }
 
     //User confirmation to delete the product.
-
     private void deleteConfirmationDialog() {
         // Create an AlertDialog.Builder and set the message, and click listeners
         // for the postivie and negative buttons on the dialog.
@@ -337,14 +381,14 @@ public class EditInventoryActivity extends AppCompatActivity implements LoaderMa
         builder.setMessage(R.string.delete_dialog_msg);
         builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                // User clicked the "Delete" button, so delete the pet.
+                // User clicked the "Delete" button, so delete the product.
                 deleteProduct();
             }
         });
         builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 // User clicked the "Cancel" button, so dismiss the dialog
-                // and continue editing the pet.
+                // and continue editing.
                 if (dialog != null) {
                     dialog.dismiss();
                 }
@@ -361,20 +405,20 @@ public class EditInventoryActivity extends AppCompatActivity implements LoaderMa
      */
     private void deleteProduct() {
         // TODO: Implement this method
-        // Only perform the delete if this is an existing pet.
+        // Only perform the delete if this is an existing item.
         if (mCurrentProductUri != null) {
-            // Call the ContentResolver to delete the pet at the given content URI.
+            // Call the ContentResolver to delete the product at the given content URI.
             // Pass in null for the selection and selection args because the mCurrentPetUri
-            // content URI already identifies the pet that we want.
+            // content URI already identifies the item that we want.
             int rowsDeleted = getContentResolver().delete(mCurrentProductUri, null, null);
             // Show a toast message depending on whether or not the delete was successful.
             if (rowsDeleted == 0) {
                 // If no rows were deleted, then there was an error with the delete.
-                Toast.makeText(this, getString(R.string.editor_delete_pet_failed),
+                Toast.makeText(this, getString(R.string.editor_delete_product_failed),
                         Toast.LENGTH_SHORT).show();
             } else {
                 // Otherwise, the delete was successful and we can display a toast.
-                Toast.makeText(this, getString(R.string.editor_delete_pet_successful),
+                Toast.makeText(this, getString(R.string.editor_delete_product_successful),
                         Toast.LENGTH_SHORT).show();
             }
         }

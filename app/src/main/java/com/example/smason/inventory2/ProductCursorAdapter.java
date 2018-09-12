@@ -1,11 +1,9 @@
 package com.example.smason.inventory2;
 
-import android.content.ContentUris;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.net.Uri;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +19,6 @@ import com.example.smason.inventory2.data.InventoryContract.ProductEntry;
  * how to create list items for each row of data in the {@link Cursor}.
  */
 public class ProductCursorAdapter extends CursorAdapter {
-
 
     /**
      * Constructs a new.
@@ -44,13 +41,13 @@ public class ProductCursorAdapter extends CursorAdapter {
      */
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
-        // TODO: Fill out this method and return the list item view (instead of null)
+
         return LayoutInflater.from(context).inflate(R.layout.list_item, parent, false);
     }
 
     /**
-     * This method binds the pet data (in the current row pointed to by cursor) to the given
-     * list item layout. For example, the name for the current pet can be set on the name TextView
+     * This method binds the product data (in the current row pointed to by cursor) to the given
+     * list item layout. For example, the name for the current product can be set on the name TextView
      * in the list item layout.
      *
      * @param view    Existing view, returned earlier by newView() method
@@ -60,15 +57,14 @@ public class ProductCursorAdapter extends CursorAdapter {
      */
     @Override
     public void bindView(View view, final Context context, Cursor cursor) {
-        // TODO: Fill out this method
         // Find individual views that we want to modify in the list item layout
         TextView nameTextView = view.findViewById(R.id.name);
         TextView priceTextView = view.findViewById(R.id.price);
         TextView quantityTextView = view.findViewById(R.id.quantity);
-        Button sale_button = view.findViewById(R.id.sale_button);
+
+
 
         // Find the columns of product attributes that we're interested in
-        final int productIdColumnIndex = cursor.getColumnIndex(ProductEntry._ID);
         int nameColumnIndex = cursor.getColumnIndex(ProductEntry.COLUMN_PRODUCT_NAME);
         int priceColumnIndex = cursor.getColumnIndex(ProductEntry.COLUMN_PRODUCT_PRICE);
         int quantityColumnIndex = cursor.getColumnIndex(ProductEntry.COLUMN_PRODUCT_QUANTITY);
@@ -77,32 +73,13 @@ public class ProductCursorAdapter extends CursorAdapter {
         String productName = cursor.getString(nameColumnIndex);
         String productPrice = cursor.getString(priceColumnIndex);
         String productQuantity = cursor.getString(quantityColumnIndex);
-        final int quantity = cursor.getInt(quantityColumnIndex);
 
-        Log.v("ProductCursorAdapter", productName + " " + " " +
-                productPrice + " " + productQuantity + " " + "R.string.product_quantity");
 
-        // Update the TextViews with the attributes for the current pet
+        // Update the TextViews with the attributes for the current product
         nameTextView.setText(productName);
         priceTextView.setText(productPrice);
         quantityTextView.setText(productQuantity);
 
-
-        sale_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Uri prodcutUri = ContentUris.withAppendedId(ProductEntry.CONTENT_URI, productIdColumnIndex);
-                if (quantity > 0) {
-                   int newquantity = quantity - 1;
-
-                    ContentValues values = new ContentValues();
-                    values.put(ProductEntry.COLUMN_PRODUCT_QUANTITY, newquantity);
-                    int updatedRows = context.getContentResolver().update(prodcutUri, values, null, null);
-                    Log.v("ProductCursorAdapter", "rows updated " + updatedRows);
-                }
-
-           }
-       });
     }
 
 }

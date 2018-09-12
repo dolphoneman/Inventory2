@@ -26,15 +26,11 @@ public final class InventoryContract {
         //full Uri to access data
         public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI,PATH_PRODUCT);
 
-        /**
-         * The MIME type of the {@link #CONTENT_URI} for a list of products.
-         */
+         //for a list of products.
         public static final String CONTENT_LIST_TYPE =
                 ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_PRODUCT;
 
-        /**
-         * The MIME type of the {@link #CONTENT_URI} for a single product.
-         */
+        //for a single product.
         public static final String CONTENT_ITEM_TYPE =
                 ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_PRODUCT;
 

@@ -22,6 +22,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -34,9 +35,6 @@ public class InventoryActivity extends AppCompatActivity implements LoaderManage
     private static final int PRODUCT_LOADER = 0;
 
     ProductCursorAdapter mCursorAdapter;
-
-    //DB helper to use the database
-    //private InventoryDBHelper mDbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,20 +51,18 @@ public class InventoryActivity extends AppCompatActivity implements LoaderManage
             }
         });
 
-        //mDbHelper = new InventoryDBHelper (this);
-
-        // Find the ListView which will be populated with the pet data
+        // Find the ListView which will be populated with the product data
         ListView productListView = findViewById(R.id.list_view);
         // Find and set empty view on the ListView, so that it only shows when the list has 0 items.
         View emptyView = findViewById(R.id.empty_view);
         productListView.setEmptyView(emptyView);
 
         //Setup an Adapter to create a list item for each row of data in the Cursor
-        //There is no pat data yet(until the loader finishes) so put in null for the Cursor
+        //There is no data yet(until the loader finishes) so put in null for the Cursor
         mCursorAdapter = new ProductCursorAdapter(this, null);
         productListView.setAdapter(mCursorAdapter);
 
-        //Setup the clickListener
+        //Setup the clickListener for the product list
         productListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
@@ -85,56 +81,16 @@ public class InventoryActivity extends AppCompatActivity implements LoaderManage
 
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        //displayDatabaseInfo();
-        //inserts duplicate hardcoded data only after second start
-        //insertProduct();
-    }
-
-    private void displayDatabaseInfo() {
-
-        // Define a projection that specifies which columns from the database
-        // you will actually use after this query.
-        String[] projection = {
-                ProductEntry._ID,
-                ProductEntry.COLUMN_PRODUCT_NAME,
-                ProductEntry.COLUMN_PRODUCT_PRICE,
-                ProductEntry.COLUMN_PRODUCT_QUANTITY,
-                ProductEntry.COLUMN_PRODUCT_SUPP_NAME,
-                ProductEntry.COLUMN_PRODUCT_SUPP_PHONE };
-
-        // Perform a query on the whole product table
-        Cursor cursor = getContentResolver().query(
-                ProductEntry.CONTENT_URI,   // The table to query
-                projection,            // The columns to return
-                null,         // The columns for the WHERE clause
-                null,      // The values for the WHERE clause
-                null);       // The sort order
-
-        ListView productListView = findViewById(R.id.list_view);
-
-        // Setup an Adapter to create a list item for each row of pet data in the Cursor.
-        ProductCursorAdapter adapter = new ProductCursorAdapter(this, cursor);
-
-        // Attach the adapter to the ListView.
-        productListView.setAdapter(adapter);
-    }
-
     /**
      * Helper method to insert hardcoded data into the database. For debugging purposes only and
      * does run on application startup adding duplicate information each time. The only difference
      * in data is the _ID number.
      */
     private void insertProduct() {
-        // Gets the database in write mode
-        //SQLiteDatabase inventorydb = mDbHelper.getWritableDatabase();
-
         // Create a ContentValues object where column names are the keys,
         // and the products attributes are the values.
         ContentValues values = new ContentValues();
-        values.put(InventoryContract.ProductEntry.COLUMN_PRODUCT_NAME, "Ethernet Cable");
+        values.put(ProductEntry.COLUMN_PRODUCT_NAME, "Ethernet Cable");
         values.put(ProductEntry.COLUMN_PRODUCT_PRICE, 5);
         values.put(ProductEntry.COLUMN_PRODUCT_QUANTITY, 10);
         values.put(ProductEntry.COLUMN_PRODUCT_SUPP_NAME, "MediaBridge");
@@ -206,22 +162,21 @@ public class InventoryActivity extends AppCompatActivity implements LoaderManage
     }
 
     //User confirmation to delete the product.
-
     private void deleteConfirmationDialog() {
         // Create an AlertDialog.Builder and set the message, and click listeners
-        // for the postivie and negative buttons on the dialog.
+        // for the positive and negative buttons on the dialog.
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(R.string.delete_all_dialog_msg);
         builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                // User clicked the "Delete" button, so delete the pet.
+                // User clicked the "Delete" button, so delete the item.
                 deleteAllProduct();
             }
         });
         builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 // User clicked the "Cancel" button, so dismiss the dialog
-                // and continue editing the pet.
+                // and continue editing the item.
                 if (dialog != null) {
                     dialog.dismiss();
                 }

@@ -48,7 +48,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_margin="@dimen/fab_margin"
+        android:layout_margin="@dimen/main_margin"
         android:text="@string/hint_edit"/>
 
 </RelativeLayout>

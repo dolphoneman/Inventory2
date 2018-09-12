@@ -9,11 +9,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.util.Log;
 
+import com.example.smason.inventory2.R;
 import com.example.smason.inventory2.data.InventoryContract.ProductEntry;
 
-/**
- * {@link ContentProvider} for Inventory2 app.
- */
+//ContentProvider} for Inventory2 app
 public class InventoryProvider extends ContentProvider {
 
     //Uri matcher codes
@@ -29,19 +28,13 @@ public class InventoryProvider extends ContentProvider {
         mUriMatcher.addURI(InventoryContract.CONTENT_AUTHORITY, InventoryContract.PATH_PRODUCT + "/#", PRODUCT_ID);
     }
 
-    /**
-     * Database helper that will provide us access to the database
-     */
+    //Database helper that will provide access to the database
     private InventoryDBHelper mDbHelper;
 
-    /**
-     * Tag for the log messages
-     */
+    //Tag for the log messages
     public static final String LOG_TAG = InventoryProvider.class.getSimpleName();
 
-    /**
-     * Initialize the provider and the database helper object.
-     */
+    //Initialize the provider and the database helper object.
     @Override
     public boolean onCreate() {
         //Create and initialize a InventoryDbHelper object to gain access to the database.
