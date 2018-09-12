@@ -98,6 +98,11 @@ public class InventoryProvider extends ContentProvider {
             default:
                 throw new IllegalArgumentException("Cannot query unknown URI " + uri);
         }
+
+        //Set notification URI so we know what content URI the cursor was created for
+        //if the data at this URI changes, then we know we need to update the cursor
+        cursor.setNotificationUri(getContext().getContentResolver(), uri);
+
         return cursor;
     }
 
@@ -150,6 +155,10 @@ public class InventoryProvider extends ContentProvider {
             return null;
         }
 
+        //Notify all listeners that the data has changed for the product content URI
+        //URI = content://com.example.smason/inventory2/products
+        getContext().getContentResolver().notifyChange(uri, null);
+
         // Once we know the ID of the new row in the table,
         // return the new URI with the ID appended to the end of it
         return ContentUris.withAppendedId(uri, newRowId);
@@ -200,7 +209,7 @@ public class InventoryProvider extends ContentProvider {
             }
         }
 
-        //if there are not values that need updated, do nothing
+        //if there are no values that need updated, do nothing
         if (values.size() == 0) {
             return 0;
         }
@@ -208,7 +217,14 @@ public class InventoryProvider extends ContentProvider {
         // Gets the database in write mode
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
-        return db.update(ProductEntry.TABLE_NAME, values, selection,selectionArgs);
+        int updatedRows = db.update(ProductEntry.TABLE_NAME, values, selection,selectionArgs);
+
+        //If 1 or more rows were updated, then notify all listeners that the data at the given URI has changed
+        if (updatedRows !=0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+
+        return updatedRows;
 
     }
 
@@ -221,19 +237,30 @@ public class InventoryProvider extends ContentProvider {
         // Get writeable database
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
+        int rowsDeleted;
+
         final int match = mUriMatcher.match(uri);
         switch (match) {
             case PRODUCTS:
                 // Delete all rows that match the selection and selection args
-                return db.delete(ProductEntry.TABLE_NAME, selection, selectionArgs);
+                rowsDeleted = db.delete(ProductEntry.TABLE_NAME, selection, selectionArgs);
+                break;
             case PRODUCT_ID:
                 // Delete a single row given by the ID in the URI
                 selection = ProductEntry._ID + "=?";
                 selectionArgs = new String[] { String.valueOf(ContentUris.parseId(uri)) };
-                return db.delete(ProductEntry.TABLE_NAME, selection, selectionArgs);
+                rowsDeleted = db.delete(ProductEntry.TABLE_NAME, selection, selectionArgs);
+                break;
             default:
                 throw new IllegalArgumentException("Deletion is not supported for " + uri);
         }
+
+        //If 1 or more rows were deleted, then notify all listeners that the data at the given URI has changed
+        if (rowsDeleted !=0 ) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+
+        return rowsDeleted;
     }
 
     /**

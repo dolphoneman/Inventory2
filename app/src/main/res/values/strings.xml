@@ -1,17 +1,27 @@
 <resources>
     <string name="app_name">Inventory2</string>
 
-    <string name="action_insert_dummy_data">Insert Dummy Data</string>
+    <string name="action_insert_dummy_data">Insert Test Data</string>
 
     <string name="action_delete_all_entries">Delete All Products</string>
 
     <string name="editor_activity_title_new_pet">Add a Product</string>
+
+    <string name="editor_activity_title_edit_pet">Edit a Product</string>
 
     <string name="action_save">Save</string>
 
     <string name="action_delete">Delete</string>
 
     <string name="category_overview">Overview</string>
+
+    <string name="category_quantity">Quantity</string>
+
+    <string name="category_price">Price</string>
+
+    <string name="category_supplier">Supplier Name</string>
+
+    <string name="category_phone">Phone</string>
 
     <string name="category_gender">Gender</string>
 
@@ -37,5 +47,42 @@
 
     <string name="editor_insert_pet_failed">Error with saving pet</string>
 
-    <string name="hint_edit">Edit</string>
+    <string name="hint_edit">Add</string>
+
+    <string name="empty_view_main_text">The database is empty</string>
+
+    <string name="empty_view_help_text">Click the add button to input new inventory</string>
+
+    <string name="editor_update_pet_failed">Error with updating pet</string>
+
+    <string name="editor_update_pet_successful">Product updated</string>
+
+    <string name="unsaved_changes_dialog_msg">Discard your changes and quit editing?</string>
+
+    <string name="discard">Discard</string>
+
+    <string name="keep_editing">Keep Editing</string>
+
+    <string name="editor_delete_pet_successful">Pet deleted</string>
+
+    <string name="editor_delete_pet_failed">Error with deleting pet</string>
+
+    <string name="delete_dialog_msg">Delete this pet?</string>
+
+    <string name="delete">Delete</string>
+
+    <string name="cancel">Cancel</string>
+
+    <string name="delete_all_dialog_msg">Delete all products from the database?</string>
+
+    <string name="unknown_supplier">Supplier unknown</string>
+
+    <string name="unknown_supp_number">Supplier phone unknown</string>
+
+    <string name="product_price">Price</string>
+
+    <string name="product_quantity">Quantity</string>
+
+    <string name="sale_button">Sale</string>
+
 </resources>
