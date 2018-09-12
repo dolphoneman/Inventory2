@@ -126,6 +126,15 @@ public class EditInventoryActivity extends AppCompatActivity implements LoaderMa
             }
         });
 
+        // Setup the button to delete the item
+        Button deleteButton = findViewById(R.id.delete_button);
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                deleteConfirmationDialog();
+            }
+        });
+
         // Setup the button to contact the supplier
         Button dialButton = findViewById(R.id.dial_button);
         dialButton.setOnClickListener(new View.OnClickListener() {
