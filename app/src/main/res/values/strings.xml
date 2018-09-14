@@ -41,6 +41,8 @@
 
     <string name="editor_insert_product_failed">Error with saving product</string>
 
+    <string name="editor_insert_product_info_missing">All fields are required!</string>
+
     <string name="hint_edit">Add</string>
 
     <string name="empty_view_main_text">The database is empty</string>

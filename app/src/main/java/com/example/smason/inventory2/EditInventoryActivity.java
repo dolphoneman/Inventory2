@@ -14,6 +14,7 @@ import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -27,7 +28,7 @@ import com.example.smason.inventory2.data.InventoryContract.ProductEntry;
 /**
  * Allows user to create a new product or edit an existing one.
  */
-public class EditInventoryActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks <Cursor>{
+public class EditInventoryActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private EditText mNameEditText;
 
@@ -42,6 +43,9 @@ public class EditInventoryActivity extends AppCompatActivity implements LoaderMa
     private static final int EXISTING_PRODUCT = 0;
 
     private Uri mCurrentProductUri;
+
+    int quantity;
+    int price;
 
     //flag to keep track of product changes
     private boolean mProductedEdited = false;
@@ -80,7 +84,7 @@ public class EditInventoryActivity extends AppCompatActivity implements LoaderMa
         mNameEditText = findViewById(R.id.product_name);
         mQuantityEditText = findViewById(R.id.product_quantity);
         mPriceEditText = findViewById(R.id.product_price);
-        mSupplierEditText =  findViewById(R.id.product_supplier);
+        mSupplierEditText = findViewById(R.id.product_supplier);
         mSupplierPhoneEditText = findViewById(R.id.supplier_phone);
 
         getLoaderManager().initLoader(EXISTING_PRODUCT, null, this);
@@ -115,14 +119,12 @@ public class EditInventoryActivity extends AppCompatActivity implements LoaderMa
             public void onClick(View view) {
                 int quantity = Integer.parseInt(mQuantityEditText.getText().toString());
 
-                if (quantity > 0 ) {
+                if (quantity > 0) {
                     quantity = quantity - 1;
                     ContentValues values = new ContentValues();
                     values.put(ProductEntry.COLUMN_PRODUCT_QUANTITY, quantity);
                     getContentResolver().update(mCurrentProductUri, values, null, null);
-
                 }
-
             }
         });
 
@@ -160,14 +162,23 @@ public class EditInventoryActivity extends AppCompatActivity implements LoaderMa
         String supplierString = mSupplierEditText.getText().toString().trim();
         String phoneString = mSupplierPhoneEditText.getText().toString().trim();
 
-        if (mCurrentProductUri == null && TextUtils.isEmpty(nameString) && TextUtils.isEmpty(priceString) &&
-                TextUtils.isEmpty(quantityString) && TextUtils.isEmpty(supplierString) && TextUtils.isEmpty(phoneString)) {
+        if (mCurrentProductUri == null && TextUtils.isEmpty(nameString) || TextUtils.isEmpty(priceString) ||
+                TextUtils.isEmpty(quantityString) || TextUtils.isEmpty(supplierString) || TextUtils.isEmpty(phoneString)) {
+            missingInput();
             return;
         }
 
-        int quantity = Integer.parseInt(quantityString);
-        int price = Integer.parseInt(priceString);
+        if (TextUtils.isEmpty(quantityString)) {
+            missingInput();
+        } else {
+            quantity = Integer.parseInt(quantityString);
+        }
 
+        if (TextUtils.isEmpty(priceString)){
+                missingInput();
+            } else {
+            price = Integer.parseInt(priceString);
+        }
 
         // Create a ContentValues object where column names are the keys,
         // and product attributes from the editor are the values.
@@ -202,6 +213,8 @@ public class EditInventoryActivity extends AppCompatActivity implements LoaderMa
                 Toast.makeText(this, getString(R.string.editor_update_product_successful), Toast.LENGTH_SHORT).show();
             }
         }
+        // Exit activity
+        finish();
     }
 
     @Override
@@ -235,8 +248,6 @@ public class EditInventoryActivity extends AppCompatActivity implements LoaderMa
             case R.id.action_save:
                 // Save product to database
                 insertProduct();
-                // Exit activity
-                finish();
                 return true;
             // Respond to a click on the "Delete" menu option
             case R.id.action_delete:
@@ -433,5 +444,11 @@ public class EditInventoryActivity extends AppCompatActivity implements LoaderMa
         }
         // Close the activity
         finish();
+    }
+
+    public void missingInput() {
+        Toast toast = Toast.makeText(this, getString(R.string.editor_insert_product_info_missing), Toast.LENGTH_LONG);
+        toast.setGravity(Gravity.CENTER | Gravity.CENTER, 0, 0);
+        toast.show();
     }
 }

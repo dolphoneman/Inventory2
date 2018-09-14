@@ -192,4 +192,5 @@ public class InventoryActivity extends AppCompatActivity implements LoaderManage
         int rowsdeleted = getContentResolver().delete(ProductEntry.CONTENT_URI, null, null);
         Log.v("InventoryActivity", rowsdeleted + " rows deleted from the product database");
     }
+
 }
