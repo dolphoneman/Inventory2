@@ -45,7 +45,16 @@ public class EditInventoryActivity extends AppCompatActivity implements LoaderMa
     private Uri mCurrentProductUri;
 
     int quantity;
+
     int price;
+
+    Button addButton;
+
+    Button subButton;
+
+    Button deleteButton;
+
+    Button dialButton;
 
     //flag to keep track of product changes
     private boolean mProductedEdited = false;
@@ -72,6 +81,15 @@ public class EditInventoryActivity extends AppCompatActivity implements LoaderMa
         //If no URI exists with the intent we are creating a new product
         if (mCurrentProductUri == null) {
             setTitle(getString(R.string.editor_activity_title_new_product));
+            //hide un-needed buttons
+            addButton = findViewById(R.id.add_button);
+            addButton.setVisibility(View.INVISIBLE);
+            subButton = findViewById(R.id.minus_button);
+            subButton.setVisibility(View.INVISIBLE);
+            deleteButton = findViewById(R.id.delete_button);
+            deleteButton.setVisibility(View.INVISIBLE);
+            dialButton = findViewById(R.id.dial_button);
+            dialButton.setVisibility(View.INVISIBLE);
 
             //hide the delete menu option for new product additions
             invalidateOptionsMenu();
@@ -97,7 +115,7 @@ public class EditInventoryActivity extends AppCompatActivity implements LoaderMa
         mSupplierPhoneEditText.setOnTouchListener(mTouchListener);
 
         // Setup the button to add quantity
-        Button addButton = findViewById(R.id.add_button);
+        addButton = findViewById(R.id.add_button);
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -113,7 +131,7 @@ public class EditInventoryActivity extends AppCompatActivity implements LoaderMa
         });
 
         // Setup the button to subtract quantity
-        Button subButton = findViewById(R.id.minus_button);
+        subButton = findViewById(R.id.minus_button);
         subButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -129,7 +147,7 @@ public class EditInventoryActivity extends AppCompatActivity implements LoaderMa
         });
 
         // Setup the button to delete the item
-        Button deleteButton = findViewById(R.id.delete_button);
+        deleteButton = findViewById(R.id.delete_button);
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -138,7 +156,7 @@ public class EditInventoryActivity extends AppCompatActivity implements LoaderMa
         });
 
         // Setup the button to contact the supplier
-        Button dialButton = findViewById(R.id.dial_button);
+        dialButton = findViewById(R.id.dial_button);
         dialButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

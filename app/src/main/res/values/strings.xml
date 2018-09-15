@@ -47,7 +47,7 @@
 
     <string name="empty_view_main_text">The database is empty</string>
 
-    <string name="empty_view_help_text">Click the add button to input new inventory</string>
+    <string name="empty_view_help_text">Click the add button to input new inventory, ALL fields REQUIRED!</string>
 
     <string name="editor_update_product_failed">Error with updating product</string>
 

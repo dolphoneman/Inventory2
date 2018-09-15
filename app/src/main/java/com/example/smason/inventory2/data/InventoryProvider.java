@@ -131,7 +131,7 @@ public class InventoryProvider extends ContentProvider {
             throw new IllegalArgumentException("Product requires a valid price");
         }
 
-        //Check that the price is not null or < 0
+        //Check that the quantity is not null or < 0
         Integer quantity = values.getAsInteger(ProductEntry.COLUMN_PRODUCT_QUANTITY);
         if (quantity == null || price < 0) {
             throw new IllegalArgumentException("Product requires a valid quantity");

@@ -64,13 +64,15 @@ public class ProductCursorAdapter extends CursorAdapter {
         // Find individual views that we want to modify in the list item layout
         TextView nameTextView = view.findViewById(R.id.name);
         TextView priceTextView = view.findViewById(R.id.price);
-        TextView quantityTextView = view.findViewById(R.id.quantity);
+        final TextView quantityTextView = view.findViewById(R.id.quantity);
 
         // Find the columns of product attributes that we're interested in
         final int idColumnIndex = cursor.getInt(cursor.getColumnIndex(ProductEntry._ID));
         int nameColumnIndex = cursor.getColumnIndex(ProductEntry.COLUMN_PRODUCT_NAME);
         int priceColumnIndex = cursor.getColumnIndex(ProductEntry.COLUMN_PRODUCT_PRICE);
-        final int quantityColumnIndex = cursor.getColumnIndex(ProductEntry.COLUMN_PRODUCT_QUANTITY);
+        int quantityColumnIndex = cursor.getColumnIndex(ProductEntry.COLUMN_PRODUCT_QUANTITY);
+
+        Log.v("Initial Quantity","=" + quantityColumnIndex);
 
         // Read the product attributes from the Cursor for the current product
 
@@ -93,14 +95,14 @@ public class ProductCursorAdapter extends CursorAdapter {
 
                 Log.v("SaleUri","= " + saleUri);
 
-                int quantity = quantityColumnIndex;
+                int quantity = Integer.parseInt(quantityTextView.getText().toString());
 
-                Log.v("Numbers", " " + quantity + " " + quantityColumnIndex);
+                Log.v("Numbers", " " + quantity + " " + quantity);
 
                 if (quantity > 0) {
                     quantity = quantity - 1;
 
-                    Log.v("Numbers", " " + quantity + " " + quantityColumnIndex);
+                    Log.v("Update", " " + quantity + " " + quantity);
 
                     ContentValues values = new ContentValues();
                     values.put(ProductEntry.COLUMN_PRODUCT_QUANTITY, quantity);

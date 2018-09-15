@@ -75,7 +75,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/sale_button"
-            android:layout_margin="@dimen/main_margin"/>
+            android:layout_margin="@dimen/main_margin"
+            android:focusable="false"/>
     </LinearLayout>
 
 
